@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.plot.ly/plotly-2.16.1.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js'></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Pick Your Favorite Color</title>
+  </head>
+  <body>
+    <!-- <embed name = "ice cream truck" src="/src/assets/ice-cream-truck.mp3" hidden = "false" loop = "false" autostart = "false" width = "140" height = "40"> -->
+    <audio src = "/src/assets/ice-cream-truck.mp3" controls loop></audio>
+    <div id="root"></div>
+    
+    <div className = "modal" id = "modal">
+      <div className = "close-modal-btn-container">
+        <button className = "modal-close-btn" id = "modal-close-btn">X</button>
+      </div>
+      <div className = "modal-inner" id = "modal-inner">
+        <h2>We ❤️ Your Data!</h2>
+        <p className = "modal-text" id = "modal-text">We have a strict policy on tracking and spamming: we'll definitely track you, and we'll definitely spam you. To use this site, enter your name and email address and accept our ridiculous terms and conditions.</p>				
+      </div>
+    </div>
+
+    <!-- <div id="tester"></div> -->
+  
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+    <script type="module" src="/src/main.jsx"></script>
+    <script>
+      window.addEventListener("DOMContentLoaded", event => {
+        const audio = document.querySelector("audio");
+        audio.volume = 0.4;
+        audio.play();
+      });
+    </script>
+  </body>
+</html>
