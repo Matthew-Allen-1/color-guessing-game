@@ -9,8 +9,8 @@ export default function FavoriteColorButtons (props) {
                     props.chooseFavoriteColors(props.precisionLevels[index], props.divNum)
                     props.displayFavoriteColors()
                 }}>
-                    <span className = 'button-span'>Click Here To See Your Favorite Colors</span> 
-                    <span className = 'button-span'>Precision Level: {item == 64 ? 'Low' : 'High'}</span>
+                    <span className = 'button-span'>Click Here To {props.favoriteStylesDisplayActive ? 'Hide' : 'See'} Your Favorite Colors</span> 
+                    {/* <span className = 'button-span'>Precision Level: {item == 64 ? 'Low' : 'High'}</span> */}
                 </button>
             </div>
         )}

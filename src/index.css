@@ -25,12 +25,12 @@
 main {
   display: flex;
   flex-direction: column;
-  background-color: yellow;
+  
   /* align-items: center; */
    /* width: 100%; */
   /* min-height: 100vh; */
   /* margin: 0px auto; */
-  border: 2px solid black;
+  /* border: 2px solid black; */
 
 }
 
@@ -41,7 +41,7 @@ main {
     display: flex;
     align-items: center;
     padding: 5px 5px;
-    /* border: 2px solid grey; */
+    border: 1px solid black;
   }
 
     nav img {
@@ -73,17 +73,16 @@ main {
       #collapse-nav-menu li {margin: 5px 0;}
 
     .nav-title {
-      color: black;
-      /* font-family: 'Arial Narrow Bold', sans-serif; */
-      font-weight: bold;
       margin: auto 0px;
       flex: 1 1 100px;
       min-width: 320px;
     }
 
       .nav-title-url {
+        color: black;
         font-size: 24px; 
         line-height: 24px;
+        font-weight: 768;
       }
 
     .nav-buttons {
@@ -101,38 +100,47 @@ main {
       }
 
   header {
-    height: 68px;
-    border: 1px solid black
+    height: 80px;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+    border-left: 1px solid black;
+    padding: 0px;
   }
 
     h1 {
-      font-size: 48px; font-weight: 768;
+      font-size: 48px; 
+      font-weight: 768;
       font-family: cursive;
-      margin: 0px 0px 8px 0px;
+      margin: 10px 0px 0px 0px;
     }
 
   #main-content-container {
     display: flex;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+    padding-top: 16px;
     /* width: 100%; */
     /* border: 2px solid red; */
-    border-bottom: 2px solid grey;
+    /* border-bottom: 2px solid grey; */
   }
 
     .sus-colors-container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 10px 20px;
+      padding: 16px 16px;
       flex-grow: 1;
       /* border: 3px solid green; */
     }
 
-      .sus-colors-button-container p {
-        font-size: 18px;
-      }
-
         .sus-colors-button {
-          /* width: 200px; */
+          width: 290px;
+          font-size: 18px;
+        }
+
+        .sus-colors-button-container li {
+          font-size: 18px;
         }
 
       .sus-color-boxes-container {
@@ -169,9 +177,8 @@ main {
       display: flex;
       flex-direction: column;
       min-width: 588px;
-      background-color: blue;
-      border-left: 2px solid grey;
-      border-right: 2px solid grey;
+      padding: 16px 0px;
+      /* border: 1px solid black; */
     }
 
       #color-section-header p {
@@ -181,9 +188,9 @@ main {
       #color-boxes {
         display: flex;
         justify-content: center;
-    
+        /* flex-direction: column; */
         width: 100%;
-        border-top: 2px grey solid;
+        /* border-top: 2px grey solid; */
         background-color: white;
       }
 
@@ -195,7 +202,7 @@ main {
           margin: 0px;
           width: 256px;
           background-color: white;
-          padding: 24px 0px 10px 0px;
+          padding: 24px 0px 24px 0px;
           /* border: 2px orange solid */
         }
 
@@ -224,10 +231,12 @@ main {
 
   #prediction-messages-container {
     padding: 0 0 10px 0;
-    border-top: 2px grey solid;
+    /* border-top: 2px grey solid; */
   }
-    #prediction-messages-container h5 {
-      font-size: 18px;
+    #prediction-messages-container p {
+      font-size: 20px;
+      font-weight: 512;
+      margin: 2px;
     }
 
   #favorite-color-buttons {
@@ -237,7 +246,7 @@ main {
     align-items: center;
     width: 100%;
     padding: 10px 0px;
-    border-top: 2px grey solid;
+    /* border-top: 2px grey solid; */
   }
   
     .favorite-color-button {
@@ -251,12 +260,13 @@ main {
       }
 
   #graph-container {
-    border-top: 2px grey solid;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 20px;
+    /* border-top: 2px grey solid; */
   }
 
   #favorite-colors-container {
@@ -264,7 +274,7 @@ main {
     width: fit-content;
     align-self: center;
     background-color: white;
-    /* border: 2px solid cyan; */
+    border: 1px solid black;
 
   }
 

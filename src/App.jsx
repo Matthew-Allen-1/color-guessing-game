@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
 import './App.css'
 
 import NavBar from './Components/NavBar'
@@ -14,6 +13,7 @@ import PredictionMessages from './Components/PredictionMessages'
 
 import FavoriteColorButtons from './Components/FavoriteColorButtons'
 import FavoriteColorBoxes from './Components/FavoriteColorBoxes'
+// import FavoriteColorContainer from './Components/FavoriteColorContainer'
 
 //Choose a random color by generating random RGB values.
 function assignRandomColor() {
@@ -58,7 +58,7 @@ const colorChoices = [], favoriteColors = [], leastFavoriteColors = []
 const proChoices = [], conChoices = []
 
 const predictionTypes = ['Euclidean', 'likeability', 'local Euclidean']
-const prediction = [2, 2, 2], correctPredictions = [0, 0, 0], counter = [0, 0, 0], predictionMessage = ['', 'I will not make a prediction until you have chosen 16 colors.', '']
+const prediction = [2, 2, 2], correctPredictions = [0, 0, 0], counter = [0, 0, 0], predictionMessage = ['', 'I will not make a prediction until you have chosen 8 colors.', '']
 const predictionSuccessRate = [0, 0, 0], predictionSuccessMessage = ['', 'I have not yet attempted any predictions.', '']
 let euclideanDistance = distanceBetweenColors(displayedColors[0], displayedColors[1])
 
@@ -67,6 +67,8 @@ const likeabilityOfProColors = [], likeabilityOfConColors = []
 
 const colorNodes = [], tempBlue = [], tempGreen = []
 const log8 = Math.log(8)
+let generalMessage = ''
+const consecutiveCorrectPredictions = [0, 0]
 
 const predictionAnimation = [
   {transform: 'rotate(0) scale(1)'},
@@ -99,7 +101,6 @@ function initializeColorNodes() {
     }
     colorNodes[i] = [...tempGreen]
   }
-  // console.log('colorNodes = ', colorNodes)
 }
 initializeColorNodes()
 
@@ -108,8 +109,10 @@ function App() {
   //Initialize state variables.
   const [styles, setStyles] = useState([{backgroundColor: hex[0]}, {backgroundColor: hex[1]}])
   const [newRows, setNewRows] = useState([{x1: 0, y1: 0, z1: 0, x2: 0, y2: 0, z2: 0}])
+  const [favoriteStylesDisplayActive, setFavoriteStylesDisplayActive] = useState(false)
   const [favoritesStyles, setFavoritesStyles] = useState([])
   const [leastFavoritesStyles, setLeastFavoritesStyles] = useState([])
+  const [susDisplayActive, setSusDisplayActive] = useState([false, false])
   const [susProChoiceStyles, setSusProChoiceStyles] = useState([])
   const [susConChoiceStyles, setSusConChoiceStyles] = useState([])
   const [h1Styles, setH1Styles] = useState({color: '#000000'})
@@ -156,16 +159,17 @@ function App() {
   }
 
   function lightenColor(color, lighteningFactor) {
-    return (convertColorToHex({
+    return ({
       red: color.red + Math.round((1 - lighteningFactor) * (255 - color.red)),
       green: color.green + Math.round((1 - lighteningFactor) * (255 - color.green)),
       blue: color.blue + Math.round((1 - lighteningFactor) * (255 - color.blue))
-    }))
+    })
   }
 
   //Choose the user's favorite colors.
   function chooseFavoriteColors(precision, divNum) {
-    const startTime = new Date().getTime()
+    if (favoriteStylesDisplayActive) {return}
+    // const startTime = new Date().getTime()
     const likeabilityOfFavoriteColors = []
     const likeabilityOfLeastFavoriteColors = []
     let colorCheck = 0
@@ -233,49 +237,66 @@ function App() {
     leastFavoriteColors.sort((a, b) => (calcLikeability(b) < calcLikeability(a)))
     
    
-    const endTime = new Date().getTime()
-    console.log('Execution time: ', endTime - startTime)
+    // const endTime = new Date().getTime()
+    // console.log('Execution time: ', endTime - startTime)
 
     
   }
 
   //Display the user's favorite and least favorite colors, then set styles of elements on the page using favorite colors.
   function displayFavoriteColors () {
-    console.log("Favorite colors sorted: ", favoriteColors)
-    favoriteColors.forEach ((color, index) => console.log('Favorite Color #', index, calcLikeability(color)))
-    setFavoritesStyles(favoriteColors.map(color => ({backgroundColor: convertColorToHex(color)})))
 
-    console.log("Least favorite colors sorted: ", leastFavoriteColors)
-    leastFavoriteColors.forEach ((color, index) => console.log('Least Favorite Color #', index, calcLikeability(color)))
-    setLeastFavoritesStyles(leastFavoriteColors.map(color => ({backgroundColor: convertColorToHex(color)})))
-
-    const favoriteColorsSortedByBrightness = [...favoriteColors]
-    favoriteColorsSortedByBrightness.sort((a, b) => (calcBrightness(b) > calcBrightness(a)))
-    console.log('Favorite colors sorted by brightness: ', favoriteColorsSortedByBrightness)
-    favoriteColorsSortedByBrightness.forEach((color, index) => console.log('Brightest Color #', index, calcBrightness(color)))
-    
-    if(colorChoices.length >= 16) {
-      setFavoriteH3Styles({color: convertColorToHex(favoriteColors[0])})
-      setFavoriteH5Styles({color: convertColorToHex(favoriteColors[1])})
-      setLeastFavoriteH3Styles({color: convertColorToHex(leastFavoriteColors[0])})
-
-      const lightnessIndex = 0.32
-      setNavStyles({backgroundColor: lightenColor(favoriteColorsSortedByBrightness[3], lightnessIndex)})
-      setHeaderStyles({backgroundColor: lightenColor(favoriteColorsSortedByBrightness[0], lightnessIndex)})
-      setColorSectionHeaderStyles({backgroundColor: lightenColor(favoriteColorsSortedByBrightness[1], lightnessIndex)})
-      setButtonStyles({backgroundColor: lightenColor(favoriteColorsSortedByBrightness[2], lightnessIndex)})
-      setH1Styles({color: convertColorToHex(favoriteColorsSortedByBrightness[7])})
-      setH2Styles({color: convertColorToHex(favoriteColorsSortedByBrightness[6])})
-      // setMainStyles({backgroundImage: 'linear-gradient(' + convertColorToHex(favoriteColorsSortedByBrightness[4]) + ', ' + convertColorToHex(favoriteColorsSortedByBrightness[5]) + ', ' + convertColorToHex(favoriteColorsSortedByBrightness[6]) + ', ' + convertColorToHex(favoriteColorsSortedByBrightness[7]) +')'})
-      setMainStyles({backgroundColor: lightenColor(favoriteColorsSortedByBrightness[2], lightnessIndex)})
-      setSusStyles({backgroundColor: lightenColor(favoriteColorsSortedByBrightness[4], lightnessIndex)})
-      setColorSectionStyles({backgroundColor: lightenColor(favoriteColorsSortedByBrightness[5], lightnessIndex)})
+    if (favoriteStylesDisplayActive) {
+      setHeaderStyles({backgroundColor: '#FFFFFF'})
+      setButtonStyles({backgroundColor: '#FFFFFF'})
+      setSusStyles({backgroundColor: '#FFFFFF'})
+      setNavStyles({backgroundColor: '#FFFFFF'})
+      setMainStyles({backgroundColor: '#CCCCCC'})
+      setH2Styles({color: '#000000'})
+      setH1Styles({color: '#000000'})
+      setFavoriteStylesDisplayActive(false)
+      return;
     }
+
+    else {
+      console.log("Favorite colors sorted: ", favoriteColors)
+      // favoriteColors.forEach ((color, index) => console.log('Favorite Color #', index, calcLikeability(color)))
+      setFavoritesStyles(favoriteColors.map(color => ({backgroundColor: convertColorToHex(color)})))
+  
+      console.log("Least favorite colors sorted: ", leastFavoriteColors)
+      // leastFavoriteColors.forEach ((color, index) => console.log('Least Favorite Color #', index, calcLikeability(color)))
+      setLeastFavoritesStyles(leastFavoriteColors.map(color => ({backgroundColor: convertColorToHex(color)})))
+  
+      const favoriteColorsSortedByBrightness = [...favoriteColors]
+      favoriteColorsSortedByBrightness.sort((a, b) => (calcBrightness(b) > calcBrightness(a)))
+      console.log('Favorite colors sorted by brightness: ', favoriteColorsSortedByBrightness)
+      // favoriteColorsSortedByBrightness.forEach((color, index) => console.log('Brightest Color #', index, calcBrightness(color)))
+      
+      if(colorChoices.length >= 8) {
+        setFavoriteH3Styles({color: convertColorToHex(favoriteColors[0])})
+        setFavoriteH5Styles({color: convertColorToHex(favoriteColors[1])})
+        setLeastFavoriteH3Styles({color: convertColorToHex(leastFavoriteColors[0])})
+
+        setHeaderStyles({backgroundColor: convertColorToHex(lightenColor(favoriteColorsSortedByBrightness[0], .64))})
+        setButtonStyles({backgroundColor: convertColorToHex(lightenColor(favoriteColorsSortedByBrightness[1], .48))})
+        setSusStyles({backgroundColor: convertColorToHex(lightenColor(favoriteColorsSortedByBrightness[2], 0.36))})
+        setNavStyles({backgroundColor: convertColorToHex(lightenColor(favoriteColorsSortedByBrightness[4], .86))})
+        setMainStyles({backgroundImage: 'linear-gradient(80deg' + ', ' + convertColorToHex(favoriteColorsSortedByBrightness[2]) + ', ' + convertColorToHex(favoriteColorsSortedByBrightness[3]) + ', ' + convertColorToHex(favoriteColorsSortedByBrightness[4]) + ', ' + convertColorToHex(favoriteColorsSortedByBrightness[5]) + ')'})
+        setH2Styles({color: convertColorToHex(favoriteColorsSortedByBrightness[6])})
+        setH1Styles({color: convertColorToHex(favoriteColorsSortedByBrightness[7])})
+      }
+
+      setFavoriteStylesDisplayActive(true)
+    }
+    
   }   
 
   //Display either the user's sus pro choices or sus con choices.
   function displaySusChoices (fav) {
     let colorCheck = 0
+    setSusDisplayActive(prevSusDisplayActive => (
+      prevSusDisplayActive.map((item, index) => ((fav && index == 0) || (!fav && index == 1) ? !item : item))
+    ))
     for (let i = 0; i < 8; i++) {
       susProChoices[i] = {color: {red: 255, green: 255, blue: 255}, index: 0}
       susConChoices[i] = {color: {red: 255, green: 255, blue: 255}, index: 0}
@@ -308,13 +329,13 @@ function App() {
     }
 
     if (fav) {
-      console.log("Most sus pro color choices sorted: ", susProChoices)
+      // console.log("Most sus pro color choices sorted: ", susProChoices)
       susProChoices.forEach ((color, index) => console.log('Sus pro color choice #', index, calcLikeability(color.color)))
       setSusProChoiceStyles(susProChoices.map(color => ({backgroundColor: convertColorToHex(color.color)})))
     }
 
     else {
-      console.log("Most sus con colors choices sorted: ", susConChoices)
+      // console.log("Most sus con colors choices sorted: ", susConChoices)
       susConChoices.forEach ((color, index) => console.log('Sus con color choice #', index, calcLikeability(color.color)))
       setSusConChoiceStyles(susConChoices.map(color => ({backgroundColor: convertColorToHex(color.color)})))
     }
@@ -322,14 +343,19 @@ function App() {
 
   //Eliminate a chosen color from the user's pro color or con color list.
   function eliminateSusColor (fav, index) {
-    console.log('susColor Index = ', index)
+
+    setSusDisplayActive(prevSusDisplayActive => (
+      prevSusDisplayActive.map((item, index) => ((fav && index == 0) || (!fav && index == 1) ? !item : item))
+    ))
+
+    // console.log('susColor Index = ', index)
     const newSusChoices = (fav ? susProChoices : susConChoices)
-    console.log('newSusChoices: ', newSusChoices)
+    // console.log('newSusChoices: ', newSusChoices)
     const newChoices = (fav ? proChoices : conChoices)
-    console.log('newChoices: ', newChoices)
+    // console.log('newChoices: ', newChoices)
     colorNodes[newChoices[newSusChoices[index].index].red][newChoices[newSusChoices[index].index].green][newChoices[newSusChoices[index].index].blue] = false
     newChoices.splice(newSusChoices[index].index, 1)
-    console.log('newChoices: ', newSusChoices)
+    // console.log('newChoices: ', newSusChoices)
     displaySusChoices(fav)
   }
 
@@ -339,12 +365,9 @@ function App() {
     const checkIfUsed = [false, false]
 
     //Reset the sus pro and con choices displayed.
-    for (let i = 0; i < 8; i++) {
-      susProChoices[i] = {color: {red: 255, green: 255, blue: 255}, index: 0}
-      susConChoices[i] = {color: {red: 255, green: 255, blue: 255}, index: 0}
-    }
-    setSusProChoiceStyles(susProChoices.map(color => ({backgroundColor: convertColorToHex(color.color)})))
-    setSusConChoiceStyles(susConChoices.map(color => ({backgroundColor: convertColorToHex(color.color)})))
+    setSusProChoiceStyles(susProChoices.map(color => ({backgroundColor: '#FFFFFF'})))
+    setSusConChoiceStyles(susConChoices.map(color => ({backgroundColor: '#FFFFFF'})))
+    setSusDisplayActive([false, false])
 
     //Record the preferred and not preferred color choices in an array.
     colorChoices.push({
@@ -370,44 +393,65 @@ function App() {
 
     //Update the running tally of Euclidean prediction success.
     function updatePredictions (choice) {
-      
+      consecutiveCorrectPredictions.shift();
+
       predictionTypes.forEach((type, index) => {
+
         if (prediction[index] == choice) {
           predictionMessage[index] = 'My prediction was correct!'
           if (index == 1 && !muted) {playSound("https://www.soundjay.com/buttons/sounds/beep-06.mp3")}
           correctPredictions[index]++
+          if (index == 1 && consecutiveCorrectPredictions[0] >= 0) {
+            consecutiveCorrectPredictions.push(consecutiveCorrectPredictions[0] + 1)
+            }
+          else if (index == 1) {consecutiveCorrectPredictions.push(1)}
           counter[index]++
         }
         else if (prediction[index] != choice && prediction[index] < 2) {
           predictionMessage[index] = 'My prediction was incorrect!'
           if (index == 1 && !muted) {playSound("https://www.soundjay.com/buttons/sounds/beep-03.mp3")}
+          if (index == 1 && consecutiveCorrectPredictions[0] <= 0) {
+            consecutiveCorrectPredictions.push(consecutiveCorrectPredictions[0] - 1)
+            }
+          else if (index == 1) {
+            consecutiveCorrectPredictions.push(-1)
+          }
           counter[index]++
         }
         else {
           predictionMessage[index] = 'I did not make a ' + type + ' prediction.'
           if (index == 1 && !muted) {playSound("https://www.soundjay.com/buttons/sounds/beep-07a.mp3")}
+          if (index == 1 ) {consecutiveCorrectPredictions.push(consecutiveCorrectPredictions[0])}
         }
         predictionSuccessRate[index] = Math.round(100 * correctPredictions[index]/counter[index])
         if (counter[index] > 0) {predictionSuccessMessage[index] = 'My prediction success rate is: ' + Math.round(100 * correctPredictions[index]/counter[index]) + '%'}
-        // else {predictionSuccessMessage[index] = 'I have not yet attempted to make any predictions.'}
-        console.log(type + ' prediction success rate:' + Math.round(100 * correctPredictions[index]/counter[index]) + '%')
       })
     }
-    if (colorChoices.length >= 16) {updatePredictions(choice)}
+
+    if (colorChoices.length >= 8) {updatePredictions(choice)}
+    console.log('consecutiveCorrectPredictions', consecutiveCorrectPredictions)
+
+    function playBeep() {
+      if (prediction[1] == choice) {playSound("https://www.soundjay.com/buttons/sounds/beep-06.mp3")}
+      else if (prediction[1] != choice && prediction[1] < 2) {playSound("https://www.soundjay.com/buttons/sounds/beep-03.mp3")}
+      else {playSound("https://www.soundjay.com/buttons/sounds/beep-07a.mp3")}
+    }
+
+    if (!muted) playBeep()
 
     //Choose favorite and least favorite colors.
     // chooseFavoriteColors(64, 2)
 
     //Animate the color box that was predicted, then choose and display two new random colors.
-    document.getElementById(['color1', 'color2', 'prediction-messages-container'][prediction[1]]).animate(prediction[1] == 2 ? predictionAnimation2 : predictionAnimation, predictionAnimationTiming).finished
+    document.getElementById(['color1', 'color2', 'prediction-messages'][prediction[1]]).animate(prediction[1] == 2 ? predictionAnimation2 : predictionAnimation, predictionAnimationTiming).finished
       .then(res => {
-        console.log(res)
+        // console.log(res)
 
         //Determine whether a nearby color has already been chosen.
         function checkIfUsedNearby(color, level) {
-          console.log ('color: ', color)
-          console.log('colorChoices length = ', colorChoices.length,)
-          console.log('level = ', level)
+          // console.log ('color: ', color)
+          // console.log('colorChoices length = ', colorChoices.length,)
+          // console.log('level = ', level)
 
           for (let i = level * Math.floor(color.red / level); i < level * (Math.floor(color.red / level) + 1); i += 1) {          
             for(let j = level * Math.floor(color.green / level); j < level * (Math.floor(color.green / level) + 1); j += 1) {
@@ -452,18 +496,52 @@ function App() {
         colorNodes[displayedColors[0].red][displayedColors[0].green][displayedColors[0].blue] = true
         colorNodes[displayedColors[1].red][displayedColors[1].green][displayedColors[1].blue] = true
 
-        //If at least 16 choices have been made, predict which of the two colors the user will prefer.
-        if (colorChoices.length >= 16) {
+        //If at least 8 choices have been made, predict which of the two colors the user will prefer.
+        if (colorChoices.length >= 8) {
+
           //Color prediction function.
           function determinePrediction(criteria0, criteria1, index) {
             if (criteria1 > criteria0) {return 1}
             else if (criteria1 < criteria0) {return 0}
             else {return 2}
           }
+
           //Predict which color the user will prefer based on each of the three criteria.
           prediction[0] = determinePrediction(avgDistance[0].con - avgDistance[0].pro, avgDistance[1].con - avgDistance[1].pro, 0)
           prediction[1] = determinePrediction(likeabilityScore[0], likeabilityScore[1], 0)
           prediction[2] = determinePrediction(avgLocalDistance[0].con - avgLocalDistance[0].pro, avgLocalDistance[1].con - avgLocalDistance[1].pro, 0)
+        
+          function determineGeneralMessage() {
+            if (consecutiveCorrectPredictions[1] >= 10) {
+              generalMessage = `That's ${consecutiveCorrectPredictions[1]} correct predictions in a row! I'm on fire!`
+            }
+            else if (consecutiveCorrectPredictions[1] >= 7) {
+              generalMessage = `That's ${consecutiveCorrectPredictions[1]} correct predictions in a row! Now I'm cookin' with gas!`
+            }
+            else if (consecutiveCorrectPredictions[1] >= 5) {
+              generalMessage = `That's ${consecutiveCorrectPredictions[1]} correct predictions in a row! I'm on a roll!`
+            }
+            else if (consecutiveCorrectPredictions[1] <= -3) {
+              generalMessage = "Why don't you just tell me which color you prefer?!"
+            }
+            else if (consecutiveCorrectPredictions[1] <= -5) {
+              generalMessage = `That's ${consecutiveCorrectPredictions[1] * -1} incorrect predictions in a row! My predictions are hopeless!`
+            }
+            else if (consecutiveCorrectPredictions[1] == -1 && consecutiveCorrectPredictions[0]>=5)
+              {generalMessage = `Darn! I lost my correct prediction streak!`}
+            else if (consecutiveCorrectPredictions[1] == 1 && consecutiveCorrectPredictions[0] <= -3)
+              {generalMessage = `Yes! I finally got one right!`}
+            else if (Math.abs(likeabilityScore[1] - likeabilityScore[0]) > 72) {
+              generalMessage = "I'll bet this one is an easy choice for you."
+            }
+            else if (Math.abs(likeabilityScore[1] - likeabilityScore[0]) < 6) {
+              generalMessage = "Tough choice?"
+            }
+            else {generalMessage = ''}
+          }
+          
+          if (colorChoices.length >= 8) {determineGeneralMessage()}
+      
         }
 
         // Set the new colors of the boxes on the screen
@@ -473,8 +551,8 @@ function App() {
 
   //Unpack arrays of objects into a separate array of values associated with an object key.
   function unpack(rowArray, key) {
-    console.log('Rows = ', rowArray)
-    console.log('Row map = ', rowArray.map(row => row.x1))
+    // console.log('Rows = ', rowArray)
+    // console.log('Row map = ', rowArray.map(row => row.x1))
     return rowArray.map(row => row.x1)
   }
 
@@ -516,7 +594,6 @@ function App() {
   };
 
   
-
   return (
     <main style = {mainStyles}>
       <NavBar 
@@ -533,11 +610,13 @@ function App() {
       <div id = 'main-content-container' >
         <div className = 'sus-colors-container' style = {susStyles}>
           <SusColorsButton 
+            susDisplayActive = {susDisplayActive[0]}
             buttonStyles = {buttonStyles}
             displaySusChoices = {displaySusChoices}
             fav = {true}
           />
           <SusColorBoxes
+            susDisplayActive = {susDisplayActive[0]}
             susStyles = {susProChoiceStyles}
             eliminateSusColor = {eliminateSusColor}
             fav = {true}
@@ -558,15 +637,19 @@ function App() {
               avgLocalDistance = {avgLocalDistance}
               handleChoice = {handleChoice}
               styles = {styles}
+              predictionMessage = {predictionMessage}
             />
           </div>
+          <h4>{generalMessage}</h4>
           <PredictionMessages 
               predictionMessage = {predictionMessage}
               predictionSuccessRate = {predictionSuccessRate}
               predictionSuccessMessage = {predictionSuccessMessage}
+              generalMessage = {generalMessage}
           />
           <FavoriteColorButtons 
-            precisionLevels = {[64, 16]}
+            precisionLevels = {[64]}
+            favoriteStylesDisplayActive = {favoriteStylesDisplayActive}
             chooseFavoriteColors = {chooseFavoriteColors}
             displayFavoriteColors = {displayFavoriteColors}
             divNum = {2}
@@ -578,11 +661,13 @@ function App() {
         </div>
         <div className = 'sus-colors-container' style = {susStyles}>
           <SusColorsButton 
+            susDisplayActive = {susDisplayActive[1]}
             buttonStyles = {buttonStyles}
             displaySusChoices = {displaySusChoices}
             fav = {false}
           />
           <SusColorBoxes
+            susDisplayActive = {susDisplayActive[1]}
             susStyles = {susConChoiceStyles}
             eliminateSusColor = {eliminateSusColor}
             fav = {false}
@@ -590,20 +675,18 @@ function App() {
         </div>  
       </div>
       
-      <div id = "favorite-colors-container">
-        <h3 style = {favoriteH3Styles}>Your Favorite Colors</h3>
-        <h5 style = {favoriteH5Styles}>You may click on any color box below to open a new tab with information about the given color.</h5>
-        <FavoriteColorBoxes
-          favoritesStyles = {favoritesStyles}
-        />
-        <h3 style = {leastFavoriteH3Styles}>Your Least Favorite Colors</h3> 
-        <FavoriteColorBoxes
-          favoritesStyles = {leastFavoritesStyles}
-        />
-      </div>
-
+      <div id = "favorite-colors-container" style = {favoriteStylesDisplayActive ? {display: 'block'} : {display: 'none'}}>
+          <h3 style = {favoriteH3Styles}>Your Favorite Colors</h3>
+          <h5 style = {favoriteH5Styles}>You may click on any color box below to open a new tab with information about the given color.</h5>
+          <FavoriteColorBoxes 
+            favoritesStyles = {favoritesStyles} 
+          />
+          <h3 style = {leastFavoriteH3Styles}>Your Least Favorite Colors</h3> 
+          <FavoriteColorBoxes 
+            favoritesStyles = {leastFavoritesStyles} 
+          />
+      </div> 
       
-
     </main>
   )
 }
